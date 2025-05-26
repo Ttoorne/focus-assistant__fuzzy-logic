@@ -89,15 +89,3 @@ Bu sistem, aşağıdaki gibi çeşitli durumlar için öneriler sunan **bulanık
 Kuralların tamamı `fuzzy_logic.py` dosyasında tanımlanmıştır.
 
 ---
-
-## 📁 Proje Yapısı
-
-```bash
-focus-assistant__fuzzy-logic/
-├── fonts/                   # Özel yazı tipleri
-├── images/                  # Uygulama görselleri ve animasyonlar
-├── fuzzy_logic.py           # Bulanık mantık sistemi ve kurallar
-├── main.py                  # PyQt6 arayüz ve uygulama akışı
-├── requirements.txt         # Gerekli Python paketleri
-└── README.md                # Proje açıklamaları
-```
