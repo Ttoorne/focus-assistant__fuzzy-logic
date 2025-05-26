@@ -60,6 +60,44 @@ Bu proje, günlük hayatta karşılaşılan uzun çalışma veya ders sürelerin
    python main.py
    ```
 
-```
+---
 
+## 🖼️ Arayüz Görselleri
+
+| Ana Ekran                      | Giriş Ekranı                 |
+| ------------------------------ | ---------------------------- |
+| ![main](images/mainPageEx.png) | ![start](images/inputEx.png) |
+
+---
+
+## 📊 Sistem Kuralları
+
+Bu sistem, aşağıdaki gibi çeşitli durumlar için öneriler sunan **bulanık kurallar**a dayalıdır:
+
+### Örnek Müzik Modu Kuralları
+
+- Eğer ortam **sessiz** ve kullanıcı **enerjik** ise → `sessizlik`
+- Eğer ortam **gürültülü** ve kullanıcı **yorgun** ise → `beyaz gürültü`
+- Eğer günün saati **sabah** ve kullanıcı **enerjik** ise → `yumuşak müzik`
+
+### Örnek Mola Kuralları
+
+- Eğer oturum süresi **uzun** ya da dikkat dağıtıcılar **çok** ise → `hemen mola ver`
+- Eğer kullanıcı **enerjik** ve dikkat dağıtıcılar **az** ise → `devam et`
+- Eğer kullanıcı **yorgun** ise → `hemen mola ver`
+
+Kuralların tamamı `fuzzy_logic.py` dosyasında tanımlanmıştır.
+
+---
+
+## 📁 Proje Yapısı
+
+```bash
+focus-assistant__fuzzy-logic/
+├── fonts/                   # Özel yazı tipleri
+├── images/                  # Uygulama görselleri ve animasyonlar
+├── fuzzy_logic.py           # Bulanık mantık sistemi ve kurallar
+├── main.py                  # PyQt6 arayüz ve uygulama akışı
+├── requirements.txt         # Gerekli Python paketleri
+└── README.md                # Proje açıklamaları
 ```
