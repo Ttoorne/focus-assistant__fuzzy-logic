@@ -45,34 +45,67 @@ break_suggestion['take_a_break'] = fuzz.trimf(break_suggestion.universe, [70, 10
 
 rules = [
     ctrl.Rule(noise['silent'] & mood['energetic'], music_mode['silence']),
+    ctrl.Rule(noise['silent'] & mood['normal'], music_mode['soft_music']),
     ctrl.Rule(noise['silent'] & mood['tired'], music_mode['soft_music']),
+    
+    ctrl.Rule(noise['medium'] & mood['energetic'], music_mode['soft_music']),
     ctrl.Rule(noise['medium'] & mood['normal'], music_mode['soft_music']),
-    ctrl.Rule(noise['noisy'] & mood['normal'], music_mode['white_noise']),
+    ctrl.Rule(noise['medium'] & mood['tired'], music_mode['white_noise']),
+    
+    ctrl.Rule(noise['noisy'] & (mood['energetic'] | mood['normal']), music_mode['white_noise']),
     ctrl.Rule(noise['noisy'] & mood['tired'], music_mode['white_noise']),
-    ctrl.Rule(time_of_day['night'] & mood['tired'], music_mode['silence']),
+    
+    ctrl.Rule(time_of_day['morning'] & (mood['energetic'] | mood['normal']), music_mode['soft_music']),
+    ctrl.Rule(time_of_day['morning'] & mood['tired'], music_mode['soft_music']),
+    
+    ctrl.Rule(time_of_day['day'] & noise['silent'], music_mode['silence']),
+    ctrl.Rule(time_of_day['day'] & noise['medium'], music_mode['soft_music']),
     ctrl.Rule(time_of_day['day'] & noise['noisy'], music_mode['white_noise']),
-    ctrl.Rule(time_of_day['morning'] & mood['energetic'], music_mode['soft_music']),
+    
+    ctrl.Rule(time_of_day['evening'] & mood['tired'], music_mode['silence']),
+    ctrl.Rule(time_of_day['evening'] & (mood['normal'] | mood['energetic']), music_mode['soft_music']),
+    
+    ctrl.Rule(time_of_day['night'] & mood['tired'], music_mode['silence']),
+    ctrl.Rule(time_of_day['night'] & mood['normal'], music_mode['silence']),
+    ctrl.Rule(time_of_day['night'] & mood['energetic'], music_mode['soft_music']),
+    
+    ctrl.Rule(distractions['few'], music_mode['silence']),
+    ctrl.Rule(distractions['medium'], music_mode['soft_music']),
     ctrl.Rule(distractions['lot'], music_mode['white_noise']),
-    ctrl.Rule(distractions['few'] & noise['silent'], music_mode['silence']),
-
+    
     ctrl.Rule(session_duration['small'] & mood['energetic'], break_suggestion['keep_going']),
-    ctrl.Rule(session_duration['long'] | distractions['lot'], break_suggestion['take_a_break']),
+    ctrl.Rule(session_duration['small'] & mood['normal'], break_suggestion['keep_going']),
+    ctrl.Rule(session_duration['small'] & mood['tired'], break_suggestion['break_soon']),
+    
+    ctrl.Rule(session_duration['medium'] & mood['energetic'], break_suggestion['keep_going']),
     ctrl.Rule(session_duration['medium'] & mood['normal'], break_suggestion['break_soon']),
-    ctrl.Rule(mood['tired'], break_suggestion['take_a_break']),
-    ctrl.Rule(mood['normal'] & distractions['medium'], break_suggestion['break_soon']),
-    ctrl.Rule(mood['energetic'] & distractions['few'], break_suggestion['keep_going']),
-    ctrl.Rule(time_of_day['night'] & session_duration['long'], break_suggestion['take_a_break']),
+    ctrl.Rule(session_duration['medium'] & mood['tired'], break_suggestion['take_a_break']),
+    
+    ctrl.Rule(session_duration['long'], break_suggestion['take_a_break']),
+    ctrl.Rule(distractions['lot'], break_suggestion['take_a_break']),
+    
+    ctrl.Rule(distractions['few'] & (mood['energetic'] | mood['normal']), break_suggestion['keep_going']),
+    ctrl.Rule(distractions['few'] & mood['tired'], break_suggestion['break_soon']),
+    
+    ctrl.Rule(distractions['medium'] & mood['energetic'], break_suggestion['break_soon']),
+    ctrl.Rule(distractions['medium'] & mood['normal'], break_suggestion['break_soon']),
+    ctrl.Rule(distractions['medium'] & mood['tired'], break_suggestion['take_a_break']),
+    
+    ctrl.Rule(distractions['lot'] & (mood['normal'] | mood['tired']), break_suggestion['take_a_break']),
+    
+    ctrl.Rule(time_of_day['morning'] & (mood['energetic'] | mood['normal']), break_suggestion['keep_going']),
+    ctrl.Rule(time_of_day['morning'] & mood['tired'], break_suggestion['break_soon']),
+    
+    ctrl.Rule(time_of_day['day'] & distractions['few'], break_suggestion['keep_going']),
     ctrl.Rule(time_of_day['day'] & distractions['lot'], break_suggestion['break_soon']),
+    
     ctrl.Rule(time_of_day['evening'] & mood['tired'], break_suggestion['take_a_break']),
-    ctrl.Rule(time_of_day['morning'] & mood['energetic'], break_suggestion['keep_going']),
-    ctrl.Rule(session_duration['small'] & distractions['few'], break_suggestion['keep_going']),
-    ctrl.Rule(session_duration['medium'] & distractions['lot'], break_suggestion['take_a_break']),
-    ctrl.Rule(session_duration['long'] & mood['normal'], break_suggestion['break_soon']),
-    ctrl.Rule(mood['energetic'] & distractions['medium'], break_suggestion['break_soon']),
+    ctrl.Rule(time_of_day['evening'] & mood['normal'], break_suggestion['break_soon']),
     ctrl.Rule(time_of_day['evening'] & session_duration['medium'], break_suggestion['break_soon']),
-    ctrl.Rule(time_of_day['morning'] & session_duration['small'], break_suggestion['keep_going']),
+    
+    ctrl.Rule(time_of_day['night'] & session_duration['long'], break_suggestion['take_a_break']),
     ctrl.Rule(time_of_day['night'] & mood['normal'], break_suggestion['break_soon']),
-
+    ctrl.Rule(time_of_day['night'] & mood['tired'], break_suggestion['take_a_break']),
 ]
 
 focus_ctrl = ctrl.ControlSystem(rules)
@@ -88,10 +121,12 @@ def analyze_focus(noise_val, time_val, session_val, distraction_val, mood_val):
     simulator.input['mood'] = mood_val
 
     simulator.compute()
-
+    
     music = simulator.output['music_mode']
     rest = simulator.output['break_suggestion']
-    
+   
+
+
     def interpret_music(val):
         if val <= 35:
             return ("sessizlik",

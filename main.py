@@ -406,7 +406,7 @@ class MainApp(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Fuzzy Focus App")
-        self.setFixedSize(450, 650)
+        self.setFixedSize(460, 650)
 
         self.center()
         
